@@ -175,6 +175,7 @@ Output:
 ```
 
 ### 4. Matrices
+Matrices are collections of data in two dimensions, consisting of rows and columns. They are also homogenous, meaning that it can only contain one data type. To declare a matrix, we can use the argument `matrix()`, and inside we have to specify the elements, the number of rows and the number of columns. 
 ### 5. Arrays
 ### 6. Factors
 
