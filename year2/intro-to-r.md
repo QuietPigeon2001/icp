@@ -277,3 +277,8 @@ squared_sum <- function(x, y) {
 squared_sum(4, 9)
 ```
 Functions are extremely important in programming. Other than allowing us to run the same code repeatedly with different arguments, it also helps us to organise our code and make it easier for other people to understand. The above is just a simple example of a function. If you get the basics right, you will be able to create many useful functions such as integrating for-loops and if-statements. Enjoy!
+
+## References
+https://www.w3schools.com/r/default.asp
+https://www.tutorialspoint.com/r/index.htm
+https://www.geeksforgeeks.org/r-tutorial/?ref=lbp
