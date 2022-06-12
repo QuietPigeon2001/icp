@@ -175,9 +175,105 @@ Output:
 ```
 
 ### 4. Matrices
-Matrices are collections of data in two dimensions, consisting of rows and columns. They are also homogenous, meaning that it can only contain one data type. To declare a matrix, we can use the argument `matrix()`, and inside we have to specify the elements, the number of rows and the number of columns. 
-### 5. Arrays
-### 6. Factors
+Matrices are collections of data in two dimensions, consisting of rows and columns. They are also homogenous, meaning that it can only contain one data type. To declare a matrix, we can use the function `matrix()`, and inside we have to specify the elements, the number of rows and the number of columns. 
+For example,
+```
+matA = matrix(c(1,3,2,4), nrow = 2, ncol = 2)
+matB = matrix(c(1,3,2,4), nrow = 2, ncol = 2, byrow = T)
 
+print(matA)
+print(matB)
+```
+Output:
+```
+     [,1] [,2]
+[1,]    1    2
+[2,]    3    4
+
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+```
+_Do you notice what is the difference between `matA` and `matB`?_
+### 5. Arrays
+Arrays are similar to matrices but unlike matrices, they can store more than two dimensions. We use the function `array()` to store the elements inside the array, and `dim()` to specify the numbers of rows, columns, and matrices respectively. 
+For example,
+```
+arr = array(c(1,2,3,4,5,6,7,8), dim = c(2,3,3))
+print(arr)
+```
+Output:
+```
+, , 1
+
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+
+, , 2
+
+     [,1] [,2] [,3]
+[1,]    7    1    3
+[2,]    8    2    4
+
+, , 3
+
+     [,1] [,2] [,3]
+[1,]    5    7    1
+[2,]    6    8    2
+```
+### 6. Factors
+Factors might be a foreign term in programming but they are very useful in data analysis for statistical modelling. We can use the function `factor()` and use a vector as an argument to the function. 
+For example, 
+```
+f = factor(c("Good", "Bad", "Good", "Good", "Bad"))
+print(f)
+```
+Output:
+```
+[1] Good Bad  Good Good Bad 
+Levels: Bad Good
+```
 ## Functions
+In the above, you may have noticed that I have mentioned the term _function_ several times. But what exactly is a function in R? According to [tutorialspoint](https://www.tutorialspoint.com/r/r_functions.htm), 
+> A function is a set of statements organized together to perform a specific task. R has a large number of in-built functions and the user can create their own functions.
+In R, a function is an object so the R interpreter is able to pass control to the function, along with arguments that may be necessary for the function to accomplish the actions.
+
+There are four main parts in a function, they are:
+1. Function name: name of the function stored as an object in the code 
+2. Arguments: parameters passed into the function, but they are optional 
+3. Function body: the code that defines what the function does
+4. Return value: the result of the code in the function
+
+The aforementioned functions are built-in, meaning that you can just call them directly. Now, I am going to show you how to make your own function. 
 ### How to make a function
+To declare a function, we first have to specify the function name and its arguments (if there is any), such as:
+```
+my_function <- function(arg1, arg2, ...) {
+  # Body
+}
+```
+Let's say we want to calculate the squared sum of two numbers. Since we will be needing the values of the two numbers, we can pass them into the function as arguments. Our function will be returning the result of the squared sum of those two arguments. 
+```
+squared_sum <- function(x, y) {
+  res = (x + y)**2
+  print(res)
+}
+```
+After creating the function, we will need to call it. 
+```
+squared_sum(4, 9)
+```
+Output: 
+```
+[1] 169
+```
+Hence, the overall code will look like this: 
+```
+squared_sum <- function(x, y) {
+  res = (x + y)**2
+  print(res)
+}
+squared_sum(4, 9)
+```
+Functions are extremely important in programming. Other than allowing us to run the same code repeatedly with different arguments, it also helps us to organise our code and make it easier for other people to understand. The above is just a simple example of a function. If you get the basics right, you will be able to create many useful functions such as integrating for-loops and if-statements. Enjoy!
