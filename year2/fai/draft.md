@@ -81,11 +81,19 @@ In this case, I would like to try out both of the modules and see how each of th
 
 ![Satellite image of Sydney, Australia](https://www.satellitetoday.com/wp-content/uploads/2018/04/0003_AUS_Sydney_Jan06_2015_WV3_30cm-1.jpg)
 
+To use the module, we first have to create a "handle" to connect to the module. After that, we can load it into the TensorFlow hub we imported at the beginning. Here, I have using the module with a higer accuracy but slower inference time. 
 ```
-module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1" #@param ["https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1", "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"]
-
+module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"
 detector = hub.load(module_handle).signatures['default']
+```
+Below are the functions that help the computer to understand the image. In the `load_img(path)` function, it reads the image and decode the image into 3 color channels. The attribute `channels` accepts 4 values, which are `0`, `1`, `3`, and `4`, which stands for:
+* 0: the default number of color channels in the image
+* 1: grayscale
+* 3: RGB
+* 4: RGBA
 
+The `run_detector(detector, path)` function is the main function in the code. The computer analyses the image and lable them at the same time. A timer also starts when the code starts to run to calculate the inference time. 
+```
 def load_img(path):
   img = tf.io.read_file(path)
   img = tf.image.decode_jpeg(img, channels=3)
@@ -101,7 +109,6 @@ def run_detector(detector, path):
 
   result = {key:value.numpy() for key,value in result.items()}
 
-  print("Found %d objects." % len(result["detection_scores"]))
   print("Inference time: ", end_time-start_time)
 
   image_with_boxes = draw_boxes(
@@ -110,10 +117,27 @@ def run_detector(detector, path):
 
   display_image(image_with_boxes)
 ```
-Run the detector:
+Now, we can run the detector:
 ```
 run_detector(detector, downloaded_image_path)
 ```
-
+Output:
+![Result](https://github.com/QuietPigeon2001/icp/blob/main/year2/fai/Images/faster.png?raw=true)
+```
+Inference time:  28.419305562973022
+```
+Let's try the faster but less accurate module. Again, we create a handle first. 
+```
+module_handle = "https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1"
+detector = hub.load(module_handle).signatures['default']
+```
+Since the functions have been defined already, we can call the function directly:
+```
+run_detector(detector, downloaded_image_path)
+```
+ Output:
+ ```
+ Inference time:  6.086521148681641
+ ```
 # Future Developments
 # References
