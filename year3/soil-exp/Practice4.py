@@ -34,17 +34,17 @@ output_array = u[:,::60]
 np.savetxt("soil-exp/result.dat",output_array,fmt="%.4f")
 
 # For one-way drainage, the graph should show the top half of the items in z 
-z = z[10::]
-l = len(z)
+newZ = z[10::]
+newLowerBound = len(newZ)
 
 # --- plot graph --- #
 plt.figure()
 plt.xlabel("Excess pore water pressure [N/m^2]")
 plt.ylabel("Height [m]")
-plt.plot(u[l-1:,60],z,label="60s")
-plt.plot(u[l-1:,120],z,label="120s")
-plt.plot(u[l-1:,180],z,label="180s")
-plt.plot(u[l-1:,240],z,label="240s")
-plt.plot(u[l-1:,300],z,label="300s")
+plt.plot(u[newLowerBound-1:,60],newZ,label="60s")
+plt.plot(u[newLowerBound-1:,120],newZ,label="120s")
+plt.plot(u[newLowerBound-1:,180],newZ,label="180s")
+plt.plot(u[newLowerBound-1:,240],newZ,label="240s")
+plt.plot(u[newLowerBound-1:,300],newZ,label="300s")
 plt.legend()
 plt.show()
