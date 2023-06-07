@@ -32,4 +32,4 @@ for n in range(1, nt):
 # --- output result --- #
 output_array = u[:,::60]
 print(output_array)
-np.savetxt("soil-exp/result.dat",output_array,fmt="%.4f")
+np.savetxt("result.dat",output_array,fmt="%.4f")
