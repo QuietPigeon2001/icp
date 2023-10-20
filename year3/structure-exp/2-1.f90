@@ -11,39 +11,42 @@ program frame_analysis
     !!!=== INPUT DATA ===
     open (100 , file = "kunoji.dat")
     read (100 ,*) nnode , nelem
-    write(*,*) nnode, nelem
     allocate ( pos (2 , nnode ) , force (3 , nnode ) , disp (3 , nnode ) , mapping (3 , nnode ) )
     allocate ( hght ( nelem ) , wdth ( nelem ) , ym ( nelem ) , EA ( nelem ) , EI ( nelem ) )
     allocate ( s (3* nnode ,3* nnode ) ,u (3* nnode ) )
     allocate ( ine (2 , nelem ) , ibc (3 , nnode ) )
 
     !!! Initialise the coordinates of nodes.
-    do inode =1 , nnode
-        read (100 ,*) ( pos (i , inode ), i =1 ,2) !pos(1, inode), pos(2, inode)
+    do inode = 1 , nnode
+        read (100 ,*) ( pos (i , inode ), i =1 ,2) 
     end do
-    write(*,*) pos
+
     j = 0
     do inode = 1 , nnode
         do i = 1, 3
-        !???
+        !!!???
             mapping (i , inode ) = j
         end do
     end do
 
-    do ielem =1 , nelem
-    read (100 ,*) ( ine (i , ielem ) ,i =1 ,2)
+    do ielem = 1 , nelem
+        read (100 ,*) ( ine (i , ielem ), i =1 ,2)
     end do
-    do ielem =1 , nelem
-    !read (100 ,*) ???
-    !EA ( ielem ) =???
-    !EI ( ielem ) =???
+
+    do ielem = 1 , nelem
+        read(100, *) hght(ielem), wdth(ielem), ym(ielem)
+        !EA ( ielem ) =???
+        !EI ( ielem ) =??
     end do
-    do inode =1 , nnode
-    !read (100 ,*) ???
+
+    do inode = 1 , nnode
+        read(100,*) (ibc(i, inode), i = 1, 3)
     end do
-    do inode =1 , nnode
-    !read (100 ,*) ???
+
+    do inode = 1 , nnode
+        read(100,*) (force(i, inode), i = 1, 3)
     end do
+    write(*,*) force
     close (100)
 
 end program frame_analysis
