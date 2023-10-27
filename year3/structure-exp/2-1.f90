@@ -49,13 +49,13 @@ program frame_analysis
      inode=ine(1,ielem)
      jnode=ine(2,ielem)
      call elemstiff(nelem,nnode,pos(:,inode),pos(:,jnode),ine,ielem,EA(ielem),EI(ielem),se)
-!     call globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
+     call globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
   end do
   
-!  do i=1,9
-!     write(*,'(9e10.3e1)') (s(i,j),j=1,9)
-!  end do
-!  write(*,*)
+  do i=1,9
+     write(*,'(9e10.3e1)') (s(i,j),j=1,9)
+  end do
+  write(*,*)
   
 !!!=== SET BOUNDARY CONDITIONS ===
 !  call setbc(nnode,ibc,s,force,u,mapping)
@@ -164,16 +164,20 @@ subroutine globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
   integer ielem,inode,jnode,nelem,nnode,ine(2,nelem),mapping(3,nnode)
   real(8) se(6,6),s(3*nnode,3*nnode)
   integer:: kk(6)
-  integer:: i, j, k, l
-  
-!  kk(1)=???
-!  ???
-  
+  integer:: i, j, k, l, temp
+
+ kk(1)=mapping(1, inode)
+ kk(2)=mapping(2, inode)
+ kk(3)=mapping(3, inode)
+ kk(4)=mapping(1, jnode)
+ kk(5)=mapping(2, jnode)
+ kk(6)=mapping(3, jnode)
+
   do i=1, 6
-!     k=???
+    k=kk(i)
      do j=1, 6
-!        l=???
-!        s(k,l)=s(k,l)+se(i,j)
+     l=kk(j)
+        s(k,l)=s(k,l)+se(i,j)
      end do
   end do
   
