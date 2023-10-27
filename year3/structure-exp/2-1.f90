@@ -76,7 +76,7 @@ program frame_analysis
   end do
  
 !!!=== COMPUTE STRAINS AT TOP(OUTSIDE) OF THE BEAMS ===
-!  call compstrain(nelem,ine,pos,disp,hght,nnode)
+  call compstrain(nelem,ine,pos,disp,hght,nnode)
  
 !!!=== OUTPUT DEFORMATION ===
 !  call outputd(nelem,nnode,ine,pos,disp)
@@ -202,8 +202,6 @@ subroutine setbc(nnode,ibc,s,force,u,mapping)
      end do
   end do
 
-  write(*,*) u
-
 end subroutine setbc
 
 subroutine solvele(a,x,n)
@@ -246,16 +244,16 @@ subroutine compstrain(nelem,ine,pos,disp,hght,nnode)
      lngth = sqrt(dx(1)**2+dx(2)**2)
      cs = dx(1) / lngth
      sn = dx(2) / lngth
-!     u(1)= ???
-!     v(1)= ???
-!     u(2)= ???
-!     v(2)= ???
+     u(1)=cs*disp(1,inode)+sn*disp(2,inode)
+     v(1)=-sn*disp(1,inode)+cs*disp(2,jnode)
+     u(2)=cs*disp(1,jnode)+sn*disp(2,jnode)
+     v(2)=-sn*disp(1,jnode)+cs*disp(2,jnode)
      psi(1)=disp(3,inode)
      psi(2)=disp(3,jnode)
-!     c2=???
-!     c3=???
-!     tops=???
-!     write(*,*) ielem,tops
+     c2=-3*v(1)/(lngth**2)-2*psi(1)/lngth+3*v(2)/(lngth**2)-psi(2)/lngth
+     c3=2*v(1)/(lngth**3)+psi(1)/(lngth**2)-2*v(2)/(lngth**3)+psi(2)/(lngth**2)
+     tops=((u(2)-u(1))/lngth+(-(hght(ielem)/2)*((2*c2)+(6*c3*(lngth/2)))))
+     write(*,*) ielem,tops
   end do
 end subroutine compstrain
 
