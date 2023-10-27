@@ -22,7 +22,7 @@ program frame_analysis
   j=0
   do inode=1,nnode
      do i=1,3
-        ! ???
+        j = j + 1
         mapping(i,inode)=j
      end do
   end do
@@ -31,26 +31,26 @@ program frame_analysis
      read(100,*) (ine(i,ielem), i=1,2)
   end do
   do ielem=1,nelem
-!     read(100,*) ???
-!     EA(ielem)=???
-!     EI(ielem)=???
+    read(100, *) hght(ielem), wdth(ielem), ym(ielem)
+    EA(ielem)=ym(ielem) * hght(ielem) * wdth(ielem)
+    EI(ielem) = wdth(ielem) * (hght(ielem) ** 3) / 12
   end do
   do inode=1, nnode
-!     read(100,*) ???
+     read(100,*) (ibc(i, inode), i = 1, 3)
   end do
   do inode=1, nnode
-!     read(100,*) ???
+    read(100,*) (force(i, inode), i = 1, 3)
   end do
   close(100)
 
 !!!=== COMPUTE STIFFNESS MATRIX ===
-!  s(:,:)=0.d0
-!  do ielem=1, nelem
-!     inode=ine(1,ielem)
-!     jnode=ine(2,ielem)
-!     call elemstiff(nelem,nnode,pos(:,inode),pos(:,jnode),ine,ielem,EA(ielem),EI(ielem),se)
+  s(:,:)=0.d0
+  do ielem=1, nelem
+     inode=ine(1,ielem)
+     jnode=ine(2,ielem)
+     call elemstiff(nelem,nnode,pos(:,inode),pos(:,jnode),ine,ielem,EA(ielem),EI(ielem),se)
 !     call globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
-!  end do
+  end do
   
 !  do i=1,9
 !     write(*,'(9e10.3e1)') (s(i,j),j=1,9)
@@ -89,15 +89,27 @@ subroutine elemstiff(nelem,nnode,posi,posj,ine,ielem,EA,EI,se)
   integer nelem,nnode
   real(8) posi(2),posj(2), EA, EI,se(6,6)
   integer ine(2,nelem),inode,jnode,ielem,i,j,k
-  real(8) lngth, dx(2), cs, sn, r(6,6), sr(6,6)
+  real(8) lngth, dx(2), cs, sn, r(6,6), sr(6,6), transposed_r(6,6)
   dx(1)=posj(1)-posi(1)
   dx(2)=posj(2)-posi(2)
   
   lngth=sqrt(dx(1)**2+dx(2)**2)
   
 !!$  *** Compute [SM] ***
-  ! se(1,1)=???
-  ! ???
+   se(:,:) = 0.d0
+   se(1,1) = EA / lngth
+   se(1,4) = - EA / lngth
+   se(2,2) = 12 * EI / (lngth ** 3)
+   se(2,3) = 6 * EI / (lngth ** 2)
+   se(2,5) = -12 * EI / (lngth ** 3)
+   se(2,6) = 6 * EI / (lngth ** 2)
+   se(3,3) = 4 * EI / lngth
+   se(3,5) = -6 * EI / (lngth ** 2)
+   se(3,6) = 2 * EI / lngth
+   se(4,4) = EA / lngth
+   se(5,5) = 12 * EI / lngth
+   se(5,6) = -6 * EI / (lngth ** 2)
+   se(6,6) = 4 * EI / lngth
 
   do i = 1, 6
      do j = 1, i-1
@@ -105,14 +117,24 @@ subroutine elemstiff(nelem,nnode,posi,posj,ine,ielem,EA,EI,se)
      end do
   end do
 
+
 !!$  ***Compute [R] ***
   cs = dx(1) / lngth
   sn = dx(2) / lngth
   
   r(:,:)=0.d0
   
-!  r(1,1)=???
-!  ???
+  r(1,1)=cs
+  r(1,2)=sn
+  r(2,1)=-sn
+  r(2,2)=cs
+  r(3,3)=1.d0
+  r(4,4)=cs
+  r(4,5)=sn
+  r(5,4)=-sn
+  r(5,5)=cs
+  r(6,6)=1.d0
+
 
 !!! ***Compute the element stiffness matrix ***
 !!! S*R
@@ -125,13 +147,17 @@ subroutine elemstiff(nelem,nnode,posi,posj,ine,ielem,EA,EI,se)
      end do
   end do
 
+  sr = matmul(se, r)
+
 !!! R^t*S*R
-  ! ???
+  transposed_r(:,:) = 0.d0
+  transposed_r = transpose(r)
+  se = matmul(transposed_r, sr)
   
-!  do i=1,6
-!     write(*,'(6e10.3e1)') (se(i,j),j=1,6)
-!  end do
-!  write(*,*)
+  do i=1,6
+     write(*,'(6e10.3e1)') (se(i,j),j=1,6)
+  end do
+  write(*,*)
 end subroutine elemstiff
 
 subroutine globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
