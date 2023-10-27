@@ -58,7 +58,7 @@ program frame_analysis
   write(*,*)
   
 !!!=== SET BOUNDARY CONDITIONS ===
-!  call setbc(nnode,ibc,s,force,u,mapping)
+  call setbc(nnode,ibc,s,force,u,mapping)
 
 !  do i=1,9
 !     write(*,'(9e10.3e1)') (s(i,j),j=1,9)
@@ -191,18 +191,19 @@ subroutine setbc(nnode,ibc,s,force,u,mapping)
 
   do inode=1,nnode
      do i=1,3
-!        k=???
-!        u(k)=???
+        k=mapping(i,inode)
+        u(k)=ibc(i,inode)
+        write(*,'(6e10.3e1)') u
      end do
   end do
   
   do inode=1,nnode
      do i=1,3
         if(ibc(i,inode)==1) then
-!           k=???
+           k=mapping(i,inode)
            do j=1,3*nnode
-!              s(k,j)=???
-!              s(j,k)=???
+              s(k,j)=0
+              s(j,k)=0
            end do
 !           s(k,k)=???
 !           u(k)=???
