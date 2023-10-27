@@ -33,7 +33,7 @@ program frame_analysis
   do ielem=1,nelem
     read(100, *) hght(ielem), wdth(ielem), ym(ielem)
     EA(ielem)=ym(ielem) * hght(ielem) * wdth(ielem)
-    EI(ielem) = wdth(ielem) * (hght(ielem) ** 3) / 12
+    EI(ielem) = (wdth(ielem) * (hght(ielem) ** 3) / 12) * ym(ielem)
   end do
   do inode=1, nnode
      read(100,*) (ibc(i, inode), i = 1, 3)
@@ -60,9 +60,9 @@ program frame_analysis
 !!!=== SET BOUNDARY CONDITIONS ===
   call setbc(nnode,ibc,s,force,u,mapping)
 
-!  do i=1,9
-!     write(*,'(9e10.3e1)') (s(i,j),j=1,9)
-!  end do
+  do i=1,9
+     write(*,'(9e10.3e1)') (s(i,j),j=1,9)
+  end do
  
 !!!=== SOLVE LINEAR EQUATIONS ===
 !  call solvele(s,u,3*nnode)
@@ -107,7 +107,7 @@ subroutine elemstiff(nelem,nnode,posi,posj,ine,ielem,EA,EI,se)
    se(3,5) = -6 * EI / (lngth ** 2)
    se(3,6) = 2 * EI / lngth
    se(4,4) = EA / lngth
-   se(5,5) = 12 * EI / lngth
+   se(5,5) = 12 * EI / (lngth ** 3)
    se(5,6) = -6 * EI / (lngth ** 2)
    se(6,6) = 4 * EI / lngth
 
@@ -139,14 +139,6 @@ subroutine elemstiff(nelem,nnode,posi,posj,ine,ielem,EA,EI,se)
 !!! ***Compute the element stiffness matrix ***
 !!! S*R
   sr(:,:) = 0.d0
-  do i = 1, 6
-     do j = 1, 6
-        do k = 1, 6
-!           sr(i,j) = ???
-        end do
-     end do
-  end do
-
   sr = matmul(se, r)
 
 !!! R^t*S*R
@@ -164,7 +156,7 @@ subroutine globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
   integer ielem,inode,jnode,nelem,nnode,ine(2,nelem),mapping(3,nnode)
   real(8) se(6,6),s(3*nnode,3*nnode)
   integer:: kk(6)
-  integer:: i, j, k, l, temp
+  integer:: i, j, k, l
 
  kk(1)=mapping(1, inode)
  kk(2)=mapping(2, inode)
@@ -176,7 +168,7 @@ subroutine globstiff(ielem,inode,jnode,s,se,nelem,nnode,mapping)
   do i=1, 6
     k=kk(i)
      do j=1, 6
-     l=kk(j)
+      l=kk(j)
         s(k,l)=s(k,l)+se(i,j)
      end do
   end do
@@ -193,7 +185,6 @@ subroutine setbc(nnode,ibc,s,force,u,mapping)
      do i=1,3
         k=mapping(i,inode)
         u(k)=ibc(i,inode)
-        write(*,'(6e10.3e1)') u
      end do
   end do
   
@@ -202,11 +193,11 @@ subroutine setbc(nnode,ibc,s,force,u,mapping)
         if(ibc(i,inode)==1) then
            k=mapping(i,inode)
            do j=1,3*nnode
-              s(k,j)=0
-              s(j,k)=0
+              s(k,j)=0.d0
+              s(j,k)=0.d0
            end do
-!           s(k,k)=???
-!           u(k)=???
+           s(k,k)=1.d0
+           u(k)=0.d0
         end if
      end do
   end do
