@@ -65,15 +65,15 @@ program frame_analysis
   end do
  
 !!!=== SOLVE LINEAR EQUATIONS ===
-!  call solvele(s,u,3*nnode)
-!  do inode=1,nnode
-!     do i=1,3
-!        disp(i,inode)=u(mapping(i,inode))
-!     end do
-!  end do
-!  do inode=1,nnode
-!     write(*,'(3e12.3e1)') (disp(i,inode),i=1,3)
-!  end do
+  call solvele(s,u,3*nnode)
+  do inode=1,nnode
+     do i=1,3
+        disp(i,inode)=u(mapping(i,inode))
+     end do
+  end do
+  do inode=1,nnode
+     write(*,'(3e12.3e1)') (disp(i,inode),i=1,3)
+  end do
  
 !!!=== COMPUTE STRAINS AT TOP(OUTSIDE) OF THE BEAMS ===
 !  call compstrain(nelem,ine,pos,disp,hght,nnode)
@@ -184,7 +184,7 @@ subroutine setbc(nnode,ibc,s,force,u,mapping)
   do inode=1,nnode
      do i=1,3
         k=mapping(i,inode)
-        u(k)=ibc(i,inode)
+        u(k)=force(i,inode)
      end do
   end do
   
@@ -201,6 +201,8 @@ subroutine setbc(nnode,ibc,s,force,u,mapping)
         end if
      end do
   end do
+
+  write(*,*) u
 
 end subroutine setbc
 
