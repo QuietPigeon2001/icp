@@ -79,7 +79,7 @@ program frame_analysis
   call compstrain(nelem,ine,pos,disp,hght,nnode)
  
 !!!=== OUTPUT DEFORMATION ===
-!  call outputd(nelem,nnode,ine,pos,disp)
+  call outputd(nelem,nnode,ine,pos,disp)
  
 end program frame_analysis
 
@@ -298,9 +298,9 @@ subroutine outputd(nelem,nnode,ine,pos,disp)
         yini=dx(2)/10*(j-1)+pos(2,inode)
         ubar=a0+a1*xbar
         vbar=c0+(c1+(c2+c3*xbar)*xbar)*xbar
-!        udef=???
-!        vdef=???
-!        write(200,*) xini, yini, udef, vdef
+        udef=ubar*cs-vbar*sn
+        vdef=ubar*sn+vbar*cs
+        write(200,*) xini, yini , udef, vdef
      end do
      write(200,*)
   end do
