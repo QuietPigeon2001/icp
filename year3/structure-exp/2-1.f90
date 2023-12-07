@@ -80,6 +80,8 @@ program frame_analysis
  
 !!!=== OUTPUT DEFORMATION ===
   call outputd(nelem,nnode,ine,pos,disp)
+
+  write(*,*) disp(2,2), disp(3,1)
  
 end program frame_analysis
 
