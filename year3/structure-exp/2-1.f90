@@ -9,7 +9,7 @@ program frame_analysis
   integer ielem,inode,jnode,i,j
   
 !!!=== INPUT DATA ===
-  open(100,file='kunoji.dat')
+  open(100,file='beam.dat')
   read(100,*) nnode, nelem
   allocate(pos(2,nnode), force(3,nnode), disp(3,nnode),mapping(3,nnode))
   allocate(hght(nelem), wdth(nelem), ym(nelem), EA(nelem), EI(nelem))
