@@ -9,7 +9,7 @@ program frame_analysis
   integer ielem,inode,jnode,i,j
   
 !!!=== INPUT DATA ===
-  open(100,file='beam.dat')
+  open(100,file='frame_horizontal.dat')
   read(100,*) nnode, nelem
   allocate(pos(2,nnode), force(3,nnode), disp(3,nnode),mapping(3,nnode))
   allocate(hght(nelem), wdth(nelem), ym(nelem), EA(nelem), EI(nelem))
@@ -80,9 +80,8 @@ program frame_analysis
  
 !!!=== OUTPUT DEFORMATION ===
   call outputd(nelem,nnode,ine,pos,disp)
+  write(*,*) disp(8,2), disp(8,3)
 
-  write(*,*) disp(2,2), disp(3,1)
- 
 end program frame_analysis
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
